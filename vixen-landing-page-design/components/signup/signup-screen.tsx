@@ -35,7 +35,7 @@ const stagger = {
 
 export function SignUpScreen() {
   const router = useRouter()
-  const { openGoogleAuth, loginWithCredentials } = useAuth()
+  const { openGoogleAuth, signUpWithCredentials } = useAuth()
   const [values, setValues] = useState<Values>({
     name: '',
     company: '',
@@ -65,14 +65,27 @@ export function SignUpScreen() {
     })
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setTouched({ name: true, company: true, email: true, password: true })
     const hasErrors = (Object.keys(validators) as FieldName[]).some((field) =>
       validators[field](values[field]),
     )
     if (!hasErrors) {
-      loginWithCredentials(values.email, 'user', values.name)
+      setToast('Creating account...')
+      const res = await signUpWithCredentials({
+        email: values.email,
+        password: values.password,
+        role: 'user',
+        name: values.name,
+        company: values.company,
+      })
+
+      if (res.error) {
+        setToast(res.error)
+        return
+      }
+
       setToast('Account created successfully')
       setTimeout(() => router.push('/user/dashboard'), 800)
     }

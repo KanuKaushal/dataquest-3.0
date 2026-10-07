@@ -74,7 +74,7 @@ function validate(values: FormValues): FormErrors {
 
 export function SignupForm() {
   const router = useRouter()
-  const { openGoogleAuth, setAuthenticatedUser } = useAuth()
+  const { openGoogleAuth, signUpWithCredentials } = useAuth()
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES)
   const [errors, setErrors] = useState<FormErrors>({})
   const [googleConnected, setGoogleConnected] = useState<string | null>(null)
@@ -106,30 +106,31 @@ export function SignupForm() {
     })
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const found = validate(values)
     setErrors(found)
     if (Object.keys(found).length > 0) return
 
     setSubmitting(true)
-    setTimeout(() => {
-      setSubmitting(false)
-      setAuthenticatedUser({
-        id: `tech_${Date.now()}`,
-        name: `${values.firstName} ${values.lastName}`.trim(),
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        role: 'technician',
-        provider: googleConnected ? 'google' : 'credentials',
-        department: values.department,
-        skills: values.skills,
-        experience: values.experience,
-      })
-      setToast('Registration submitted successfully')
-      setTimeout(() => router.push('/technician/dashboard'), 800)
-    }, 700)
+    const res = await signUpWithCredentials({
+      email: values.email,
+      password: values.password,
+      role: 'technician',
+      name: `${values.firstName} ${values.lastName}`.trim(),
+      department: values.department,
+      skills: values.skills,
+      experience: values.experience,
+    })
+    setSubmitting(false)
+
+    if (res.error) {
+      setToast(res.error)
+      return
+    }
+
+    setToast('Registration submitted successfully')
+    setTimeout(() => router.push('/technician/dashboard'), 800)
   }
 
   const invalid = (key: keyof FormValues) => (errors[key] ? true : undefined)

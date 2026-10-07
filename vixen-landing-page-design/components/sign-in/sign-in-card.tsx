@@ -43,12 +43,14 @@ export function SignInCard() {
     })
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = event.currentTarget
     const identifierInput = form.elements.namedItem('identifier') as HTMLInputElement | null
+    const passwordInput = form.elements.namedItem('password') as HTMLInputElement | null
     const identifier = identifierInput?.value || `${role}@servicesync.io`
-    loginWithCredentials(identifier, role)
+    const password = passwordInput?.value || ''
+    await loginWithCredentials(identifier, role, undefined, password)
     setToast('Signed in successfully')
     timer.current = setTimeout(() => router.push(current.destination), REDIRECT_DELAY_MS)
   }
