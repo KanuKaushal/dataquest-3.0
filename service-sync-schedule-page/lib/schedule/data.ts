@@ -1,0 +1,247 @@
+import type { Job, SiteContact, SiteId, TimeOff } from './types'
+
+export const TODAY_INDEX = 1
+export const MOCK_NOW_MINUTES = 9 * 60 + 12
+export const FREE_SLOTS_THIS_WEEK = 6
+
+export const TECHNICIAN_FIRST_NAME = 'Maya'
+
+export const WEEKLY_HOURS = [
+  { day: 'Mon', hours: '08:00 to 17:00' },
+  { day: 'Tue', hours: '08:00 to 17:00' },
+  { day: 'Wed', hours: '08:00 to 17:00' },
+  { day: 'Thu', hours: '08:00 to 17:00' },
+  { day: 'Fri', hours: '08:00 to 17:00' },
+] as const
+
+export const TIME_OFF: TimeOff[] = [{ day: 4, label: 'Off duty · all day' }]
+
+const TRAVEL_MINUTES: Record<string, number> = {
+  AB: 25,
+  BC: 20,
+  AC: 15,
+}
+
+export function travelMinutes(from: SiteId, to: SiteId) {
+  if (from === to) return 0
+  return TRAVEL_MINUTES[[from, to].sort().join('')] ?? 0
+}
+
+const CONTACTS: Record<SiteId, SiteContact> = {
+  A: { name: 'Priya Nair', phone: '+1 555 0142' },
+  B: { name: 'Tom Becker', phone: '+1 555 0177' },
+  C: { name: 'Lena Ortiz', phone: '+1 555 0119' },
+}
+
+export const SCHEDULE_JOBS: Job[] = [
+  {
+    id: 'job-2041',
+    requestId: 'REQ-2041',
+    machine: 'M-098',
+    machineType: 'Generator',
+    site: 'B',
+    day: 0,
+    start: '08:00',
+    end: '12:00',
+    priority: 'normal',
+    status: 'done',
+    sla: null,
+    fault: 'load bank test and fuel filter swap',
+    parts: [
+      { code: 'FF-3306', qty: 2, confirmed: true },
+      { code: 'GK-0412', qty: 1, confirmed: true },
+    ],
+    contact: CONTACTS.B,
+  },
+  {
+    id: 'job-2040',
+    requestId: 'REQ-2040',
+    machine: 'M-142',
+    machineType: 'Compressor',
+    site: 'C',
+    day: 0,
+    start: '13:00',
+    end: '16:30',
+    priority: 'high',
+    status: 'done',
+    sla: null,
+    fault: 'oil carryover in the air line, replace separator',
+    parts: [
+      { code: 'SP-8841', qty: 1, confirmed: true },
+      { code: 'OL-1120', qty: 4, confirmed: true },
+    ],
+    contact: CONTACTS.C,
+  },
+  {
+    id: 'job-2047',
+    requestId: 'REQ-2047',
+    machine: 'M-104',
+    machineType: 'Pump',
+    site: 'A',
+    day: 1,
+    start: '08:30',
+    end: '10:00',
+    priority: 'urgent',
+    status: 'in-progress',
+    sla: { day: 1, time: '09:57' },
+    fault: 'seal leaking at the drive end, pressure dropping',
+    parts: [
+      { code: 'SL-2210', qty: 1, confirmed: true },
+      { code: 'OR-0057', qty: 2, confirmed: true },
+    ],
+    contact: CONTACTS.A,
+  },
+  {
+    id: 'job-2046',
+    requestId: 'REQ-2046',
+    machine: 'M-211',
+    machineType: 'Compressor',
+    site: 'B',
+    day: 1,
+    start: '10:30',
+    end: '12:30',
+    priority: 'high',
+    status: 'pending',
+    sla: { day: 1, time: '12:32' },
+    fault: 'trips on high temperature after twenty minutes',
+    parts: [
+      { code: 'TS-4402', qty: 1, confirmed: true },
+      { code: 'FN-0918', qty: 1, confirmed: true },
+      { code: 'CL-7730', qty: 2, confirmed: true },
+    ],
+    contact: CONTACTS.B,
+  },
+  {
+    id: 'job-2045',
+    requestId: 'REQ-2045',
+    machine: 'M-087',
+    machineType: 'Conveyor',
+    site: 'C',
+    day: 1,
+    start: '12:00',
+    end: '14:00',
+    priority: 'normal',
+    status: 'pending',
+    sla: { day: 1, time: '16:00' },
+    fault: 'belt tracking off, drive motor running noisy',
+    parts: [
+      { code: 'BT-5520', qty: 1, confirmed: true },
+      { code: 'BR-0381', qty: 2, confirmed: true },
+    ],
+    contact: CONTACTS.C,
+  },
+  {
+    id: 'job-2044',
+    requestId: 'REQ-2044',
+    machine: 'M-132',
+    machineType: 'Boiler',
+    site: 'A',
+    day: 1,
+    start: '15:30',
+    end: '17:00',
+    priority: 'normal',
+    status: 'pending',
+    sla: { day: 1, time: '17:30' },
+    fault: 'quarterly burner inspection and flue check',
+    parts: [
+      { code: 'NZ-1175', qty: 1, confirmed: true },
+      { code: 'GS-2064', qty: 1, confirmed: true },
+    ],
+    contact: CONTACTS.A,
+  },
+  {
+    id: 'job-2048',
+    requestId: 'REQ-2048',
+    machine: 'M-056',
+    machineType: 'Pump',
+    site: 'B',
+    day: 2,
+    start: '08:00',
+    end: '12:00',
+    priority: 'normal',
+    status: 'pending',
+    sla: { day: 2, time: '12:00' },
+    fault: 'vibration at the coupling, realign and re-grease',
+    parts: [
+      { code: 'CP-6103', qty: 1, confirmed: true },
+      { code: 'GR-0220', qty: 2, confirmed: true },
+    ],
+    contact: CONTACTS.B,
+  },
+  {
+    id: 'job-2049',
+    requestId: 'REQ-2049',
+    machine: 'M-176',
+    machineType: 'Generator',
+    site: 'C',
+    day: 2,
+    start: '13:00',
+    end: '17:00',
+    priority: 'high',
+    status: 'pending',
+    sla: { day: 2, time: '17:00' },
+    fault: 'auto-start fails on mains loss, check transfer switch',
+    parts: [
+      { code: 'TR-9012', qty: 1, confirmed: true },
+      { code: 'BA-2250', qty: 2, confirmed: true },
+    ],
+    contact: CONTACTS.C,
+  },
+  {
+    id: 'job-2050',
+    requestId: 'REQ-2050',
+    machine: 'M-165',
+    machineType: 'Boiler',
+    site: 'A',
+    day: 3,
+    start: '08:00',
+    end: '11:30',
+    priority: 'normal',
+    status: 'pending',
+    sla: { day: 3, time: '11:30' },
+    fault: 'feed pump replacement and pressure test',
+    parts: [
+      { code: 'FP-7731', qty: 1, confirmed: false },
+      { code: 'GK-0990', qty: 3, confirmed: true },
+    ],
+    contact: CONTACTS.A,
+  },
+  {
+    id: 'job-2051',
+    requestId: 'REQ-2051',
+    machine: 'M-140',
+    machineType: 'Generator',
+    site: 'A',
+    day: 3,
+    start: '12:00',
+    end: '15:30',
+    priority: 'normal',
+    status: 'pending',
+    sla: { day: 3, time: '15:30' },
+    fault: 'annual service, oil and coolant change',
+    parts: [
+      { code: 'OF-1408', qty: 2, confirmed: true },
+      { code: 'CO-5521', qty: 1, confirmed: true },
+    ],
+    contact: CONTACTS.A,
+  },
+  {
+    id: 'job-2052',
+    requestId: 'REQ-2052',
+    machine: 'M-203',
+    machineType: 'Conveyor',
+    site: 'B',
+    day: 3,
+    start: '16:00',
+    end: '18:00',
+    priority: 'high',
+    status: 'pending',
+    sla: { day: 3, time: '18:00' },
+    fault: 'gearbox oil change and guard check',
+    parts: [
+      { code: 'GO-3340', qty: 2, confirmed: true },
+      { code: 'GD-0071', qty: 1, confirmed: true },
+    ],
+    contact: CONTACTS.B,
+  },
+]

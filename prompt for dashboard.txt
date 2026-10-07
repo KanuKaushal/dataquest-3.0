@@ -1,0 +1,43 @@
+Build the dashboard screens for "Vixen", an industrial equipment service tracking app. Use Next.js/React, Tailwind CSS, shadcn/ui, Lucide icons and Framer Motion. Use mock data only. Two dashboards share one layout: /user/dashboard and /technician/dashboard.
+
+DESIGN DIRECTION (very important)
+It should look like a small design studio hand-built it, not like a generated template. Calm, minimal, confident, and a little editorial.
+- Background: warm off-white (#F7F5F0). Text: near-black ink (#1A1A18). Muted text: #77756E. Borders: 1px solid #E4E0D6.
+- ONE accent color only: burnt orange (#E8590C). Use it sparingly: the active nav item, the primary button, and urgent items.
+- Status colors are muted, not neon: done = #3F7D58, in progress = #B7791F, urgent = the orange accent, pending = grey.
+- Typography: "Instrument Sans" for UI text, "Instrument Serif" for the page title only, and "JetBrains Mono" for IDs, numbers and timestamps (like M-104 or REQ-2041). Tight, clean hierarchy.
+- NO gradients, NO glassmorphism or blur, NO drop shadows (use thin borders instead), NO emojis, NO colorful icon circles, NO purple/blue tech look. Border radius is small (6px). Generous whitespace and strict alignment.
+- Copy must sound human and direct. Use short lowercase-friendly labels. No "Welcome back!" or "Unlock insights" or "Seamless" phrasing. For example, the greeting is just the date and the user's first name in the serif font: "Tuesday, 7 October. Hi Arjun."
+- Don't make everything a card. Use plain rows, dividers and whitespace. Only the key list sits in a bordered container.
+
+LAYOUT (both dashboards)
+- Slim left sidebar (220px), same background as the page, separated by a 1px border. App name "ServiceSync" at top in the serif font. Nav items as plain text with a small Lucide icon. The active item has a 2px orange bar on the left that slides smoothly between items when you click (Framer Motion layoutId). Logout sits at the bottom, quietly.
+- Top area: the greeting on the left, a search field (underline style, no box) and a small round avatar with initials on the right.
+- Main content max-width 1100px.
+
+USER DASHBOARD (/user/dashboard)
+Sidebar: Overview, My requests, New request, Notifications (small orange dot if unread), Logout.
+1. A row of four numbers separated by thin vertical dividers (not cards): Open, In progress, Completed, Overdue. Each is a large mono number with a small label under it. Numbers count up when the page loads.
+2. "Recent requests" table in a bordered container: Request ID (mono), Machine (e.g., M-104), Site, Priority, Status (small pill with a dot), Technician, Updated (e.g., "2h ago"). 8 realistic rows with mixed statuses: pump, compressor, conveyor, boiler and generator across Site A, B and C. A "New request" primary button (orange, top right of the table).
+3. Right side column: a small "Needs attention" list of 2 or 3 items (technician dropped out, part unavailable, SLA at risk), each with a one-line description and a text link "Reassign" or "View".
+
+TECHNICIAN DASHBOARD (/technician/dashboard)
+Sidebar: Today, My tasks, Schedule, Notifications, Logout.
+1. The same four-number row: Assigned, In progress, Done today, Pending.
+2. "Today's jobs": a vertical list of job rows (not cards). Each row shows machine and site in bold, a one-line fault description, a priority tag, an SLA countdown in mono (e.g., "due in 3h 20m", orange if under 1 hour), and two buttons: a ghost "Start" and a solid "Mark complete". Expanding a row (click) reveals a space for forms (leave a placeholder "Task log goes here").
+3. A small status toggle in the top bar: "Available / On a job / Off duty".
+
+ANIMATIONS AND INTERACTIONS (use Framer Motion, keep them subtle, 150 to 300ms, ease-out)
+- Page load: content fades up 8px with staggered delays (60ms between rows and sections).
+- Table and job rows: on hover the background shifts to #EFECE4 and a thin orange line grows in from the left edge. Hovering a row also nudges the arrow icon at the end of the row 3px right.
+- Buttons: hover darkens slightly, click does a quick scale to 0.97 and back. The primary button has a tiny upward lift on hover.
+- Sidebar: the active indicator slides between items. Nav items shift 2px right on hover.
+- Numbers: count up on load.
+- Status pill: when a technician clicks "Start", the pill smoothly morphs from "Pending" to "In progress" with a color cross-fade. "Mark complete" shows a small checkmark that draws itself (SVG stroke animation), then the row fades to muted and slides to the bottom.
+- Expanding a row: smooth height animation, not a jump.
+- Toast: a minimal bottom-right toast ("Job started", "Request created") slides in and out. No icons, just text and a thin left border.
+- Search field: the underline expands from the center on focus.
+- Respect prefers-reduced-motion.
+
+CODE QUALITY
+Clean component structure (Sidebar, StatRow, RequestTable, JobRow, StatusPill, Toast), consistent spacing scale, no unused code. Fully responsive: on mobile the sidebar becomes a bottom tab bar and the table turns into stacked rows.
