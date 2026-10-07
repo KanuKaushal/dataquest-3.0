@@ -14,6 +14,16 @@ import {
 } from '@/lib/technician-notifications'
 
 function summarize(n: TechnicianNotification): RowSummary {
+  const offerTag = n.offer
+    ? n.offer.status === 'pending'
+      ? `⏱️ ${n.offer.respondWithinMinutes}m limit`
+      : n.offer.status === 'accepted'
+        ? '✓ Accepted'
+        : n.offer.status === 'declined'
+          ? '✗ Declined'
+          : '⏱ Expired'
+    : null
+
   return {
     kind: dotKind(n.kind),
     title: n.title,
@@ -21,9 +31,10 @@ function summarize(n: TechnicianNotification): RowSummary {
     tags: [
       ...(n.requestId ? [n.requestId] : []),
       n.machine ? `${n.machine}, ${n.site}` : n.site,
+      ...(offerTag ? [offerTag] : []),
     ],
     age: n.age,
-    actionLabel: n.action?.label,
+    actionLabel: n.offer?.status === 'pending' ? 'Review & Respond' : n.action?.label,
     read: n.read,
     fresh: n.fresh,
   }

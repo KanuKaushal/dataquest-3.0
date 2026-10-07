@@ -52,6 +52,27 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     }
   }, [])
 
+  const [extraUnread, setExtraUnread] = useState(0)
+
+  useEffect(() => {
+    const sync = () => {
+      try {
+        const raw = localStorage.getItem('vixen_technician_notifications_v2')
+        if (raw) {
+          const notifs = JSON.parse(raw)
+          setExtraUnread(notifs.filter((n: any) => !n.read).length)
+        }
+      } catch {}
+    }
+    sync()
+    window.addEventListener('vixen_notifications_changed', sync)
+    window.addEventListener('storage', sync)
+    return () => {
+      window.removeEventListener('vixen_notifications_changed', sync)
+      window.removeEventListener('storage', sync)
+    }
+  }, [])
+
   const items = useMemo(
     () =>
       all
@@ -59,7 +80,10 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     [all],
   )
-  const unreadCount = useMemo(() => items.filter((item) => !item.read).length, [items])
+  const unreadCount = useMemo(
+    () => Math.max(items.filter((item) => !item.read).length, extraUnread),
+    [items, extraUnread],
+  )
 
   const markRead = useCallback((id: string) => {
     setAll((current) => current.map((item) => (item.id === id && !item.read ? { ...item, read: true } : item)))

@@ -32,6 +32,18 @@ export interface TechnicianNotification {
   events: TimelineEvent[]
   read: boolean
   fresh?: boolean
+  offer?: {
+    notificationId: string
+    requestId: string
+    machine: string
+    site: Site
+    respondWithinMinutes: number
+    offerSeconds: number
+    createdAt?: number
+    expiresAt?: number
+    status?: 'pending' | 'accepted' | 'declined' | 'expired'
+    declineReason?: string
+  }
 }
 
 export interface PendingAssignment {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FadeUp } from '@/components/fade-up'
 import { JobRow } from '@/components/job-row'
 import { StatRow } from '@/components/stat-row'
@@ -11,6 +11,20 @@ export function TechnicianDashboard() {
   const toast = useToast()
   const [jobs, setJobs] = useState<Job[]>(initialJobs)
   const [completing, setCompleting] = useState<string[]>([])
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('vixen_technician_jobs_v2')
+      if (stored) {
+        const parsed: Job[] = JSON.parse(stored)
+        if (parsed.length > 0) {
+          // Merge avoiding duplicates
+          const ids = new Set(parsed.map((j) => j.id))
+          setJobs([...parsed, ...initialJobs.filter((j) => !ids.has(j.id))])
+        }
+      }
+    } catch {}
+  }, [])
 
   const count = (predicate: (job: Job) => boolean) => jobs.filter(predicate).length
   const ordered = [
